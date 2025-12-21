@@ -1,0 +1,308 @@
+/* Shared site stylesheet (consolidated) */
+/* Reset & base */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  color: #222;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+:root{
+  --nav-height: 64px;
+}
+
+/* Ensure content isn't hidden under fixed nav */
+body { padding-top: var(--nav-height); }
+
+/* Home page: keep as a pure landing (no vertical scroll), nav overlays hero */
+body.page-index {
+  padding-top: 0; /* let nav overlay the hero */
+  overflow: hidden; /* remove vertical scrolling on home */
+}
+
+/* NAVIGATION BAR */
+.sticky-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* brand on left, controls on right */
+  text-align: right;
+  z-index: 1000;
+  /* Make the nav visible on desktop by default (light background); landing page will override */
+  background: rgba(255,255,255,0.95);
+  color: #111;
+  transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+
+.sticky-nav .nav-toggle {
+  display: none; /* shown on mobile via media query */
+}
+
+/* Brand on the left (gold). Look for this selector to find the brand easily. */
+.sticky-nav .brand { font-weight:800; color: #FFD700; margin-left: 12px; font-size: 1.25rem; display: inline-block; transition: transform 120ms ease, box-shadow 180ms ease; }
+
+.nav-controls { display:flex; align-items:center; gap:12px; }
+
+.sticky-nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin: 0;
+  padding-right: 30px;
+  align-items: center;
+}
+.sticky-nav li { text-align: center; }
+.sticky-nav a {
+  color: inherit; /* inherit dark color on desktop; landing page will override to white */
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 18px;
+  background: transparent;
+  display: inline-block; /* allow smooth transform */
+  transition: background 0.2s ease, color 0.2s ease, transform 0.12s ease, box-shadow 120ms ease;
+}
+.sticky-nav a.brand { background: transparent; padding: 0; }
+.sticky-nav a.brand:hover { background: transparent; color: inherit; text-decoration: none; }
+
+/* Keep the landing page nav transparent so hero shows through */
+.sticky-nav a:hover { background: #FFD700; color: #000; transform: translateY(-1px); }
+
+/* Make navbar visible on non-landing pages immediately (so links don't blend into white backgrounds) */
+body:not(.page-index) .sticky-nav {
+  background: rgba(255,255,255,0.95);
+  color: #111;
+}
+body:not(.page-index) .sticky-nav a {
+  color: #111;
+  background: transparent;
+}
+
+/* Keep the landing page nav transparent so hero shows through */
+body.page-index .sticky-nav { background: transparent; color: #fff; }
+body.page-index .sticky-nav a { color: #fff; }
+.sticky-nav a:hover { background: #FFD700; color: #000; transform: translateY(-1px); }
+
+/* NAV SCROLLED STATE */
+.sticky-nav.scrolled, body.scrolled .sticky-nav { background: rgba(255,255,255,0.95); box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+
+/* When nav is on a light background (after scroll) make links dark and the toggle visible */
+.sticky-nav.scrolled a, body.scrolled .sticky-nav a { color: #111; background: rgba(0,0,0,0.03); }
+.sticky-nav.scrolled a:hover, body.scrolled .sticky-nav a:hover { background:#FFD700; color:#000; }
+.sticky-nav.scrolled .nav-toggle, body.scrolled .nav-toggle { background: rgba(255,255,255,0.96); color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+
+/* Keep the brand (ICFNL) visually consistent (gold) even when the nav goes into scrolled state */
+.sticky-nav .brand,
+.sticky-nav a.brand,
+.sticky-nav.scrolled .brand,
+.sticky-nav.scrolled a.brand,
+body.scrolled .sticky-nav .brand,
+body.scrolled .sticky-nav a.brand {
+  color: #FFD700 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Desktop-specific: ensure nav links are visible immediately on non-home pages
+   and give a subtle raised hover effect similar to the brand */
+@media (min-width: 769px) {
+  body:not(.page-index) .sticky-nav a {
+    color: #111 !important; /* ensure dark links on white backgrounds */
+    background: transparent !important;
+  }
+
+  body:not(.page-index) .sticky-nav a:hover,
+  body:not(.page-index) .sticky-nav .brand:hover {
+    transform: translateY(-1px); /* match ICFNL hover distance */
+    box-shadow: 0 6px 18px rgba(12,18,30,0.08);
+    background: transparent; /* keep no boxed background for desktop links */
+    color: #111;
+  }
+
+  /* keep brand color intact (safety) */
+  body:not(.page-index) .sticky-nav .brand,
+  body:not(.page-index) .sticky-nav a.brand {
+    color: #FFD700 !important;
+  }
+}
+
+/* Hamburger bar styles and transform-to-X animation */
+.nav-toggle .bar { display:block; width:20px; height:2px; background: white; margin:3px 0; transition: transform 260ms ease, opacity 200ms ease, background 200ms ease; }
+.sticky-nav.scrolled .nav-toggle .bar, body.scrolled .nav-toggle .bar { background: #111; }
+
+/* When nav open, animate bars into an X */
+.sticky-nav.open .nav-toggle .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.sticky-nav.open .nav-toggle .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.sticky-nav.open .nav-toggle .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* HERO (shared layout) */
+.hero { position: relative; display:flex; justify-content:center; align-items:center; height:100vh; opacity:0; animation: fadeIn 2.5s forwards; background-position:center 43%; background-size:cover; background-repeat:no-repeat; }
+.hero::before { content: ""; position:absolute; inset:0; background:rgba(0,0,0,0.4); }
+.hero-text { position:relative; z-index:1; color:#fff; }
+.hero-text h1 { font-family: 'Calisto MT', serif; font-size:3rem; line-height:1.2; }
+.cta-button { background:#FFD700; color:#000; padding:12px 20px; font-weight:700; border-radius:6px; text-decoration:none; display:inline-block; }
+.cta-button:hover { background:#d4af37; }
+
+/* Holiday message style (small, non-intrusive) */
+.holiday-message {
+  color: #FFD700; /* gold */
+  background: rgba(0,0,0,0.08);
+  display: inline-block;
+  padding: 8px 14px; /* a bit more padding for emphasis */
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1.15rem; /* larger */
+  letter-spacing: 0.02em;
+  margin-bottom: 8px; /* slightly smaller bottom gap */
+  margin-top: -10px; /* nudge higher inside the hero */
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+/* Slight entrance for holiday messaging: start slightly higher for a subtler drop-in */
+.holiday-message { opacity: 0; transform: translateY(-12px); transition: opacity 420ms ease, transform 420ms ease; }
+.holiday-message.visible { opacity: 1; transform: translateY(0); }
+
+/* HALF PAGE (shared) */
+.half-page-bg { display:flex; align-items:center; justify-content:space-between; height:100vh; padding:60px; background-color:#f4f4f4; opacity:0; transform:translateY(20px); transition:opacity 1s ease-in-out, transform 1s ease-in-out; position:relative; }
+.half-page-bg::before { content:""; position:absolute; top:0; right:0; width:50%; height:100%; background-position:center; background-size:cover; background-repeat:no-repeat; z-index:-1; border-top-right-radius:50px; border-bottom-right-radius:50px; }
+.half-page-text { width:45%; text-align:left; padding:40px; background:white; box-shadow:0 10px 30px rgba(0,0,0,0.08); border-radius:10px; }
+
+.icfnl_green{ color:#4CAF50; }
+a { color:#4CAF50; }
+a:hover { color:darkgreen; }
+
+/* Fade-in util */
+.fade-in { opacity:0; transform:translateY(20px); transition: opacity 0.9s ease-out, transform 0.9s ease-out; }
+.fade-in.visible { opacity:1; transform:translateY(0); }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* Mobile navigation - animated right-aligned white panel with boxed items */
+@media (max-width: 768px) {
+  /* modern white toggle button */
+  .sticky-nav .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* stack the three .bar spans vertically */
+    width: 48px;
+    height: 40px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    color: #111;
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(12,18,30,0.12);
+    z-index: 1200;
+  }
+
+  /* bars inside the toggle */
+  .sticky-nav .nav-toggle .bar { display:block; width:20px; height:2px; background:#111; margin:3px 0; transition: transform 260ms ease, opacity 200ms ease; }
+
+  /* menu panel: right aligned so it doesn't cover full width */
+  .sticky-nav ul {
+    position: absolute;
+    right: 12px; /* anchor near the toggle */
+    top: calc(var(--nav-height) + 8px);
+    width: min(360px, 92%);
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    margin: 0;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 18px 40px rgba(12,18,30,0.14);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: max-height 320ms cubic-bezier(.2,.9,.2,1), opacity 200ms ease, transform 260ms ease;
+    z-index: 1100;
+  }
+
+  .sticky-nav.open ul {
+    max-height: 420px; /* allows content to show; scroll if overflow */
+    opacity: 1;
+    transform: translateY(0);
+    overflow-y: auto; /* allow panel internal scroll when content is tall */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure links are visible immediately when the panel is open (even before any scroll event) */
+  .sticky-nav.open ul a,
+  .sticky-nav.open ul a:link,
+  .sticky-nav.open ul a:visited {
+    color: #111 !important;
+  }
+
+  /* Ensure the hamburger bars are dark when the menu is open */
+  .sticky-nav.open .nav-toggle .bar { background: #111 !important; }
+
+  /* boxed nav items */
+  .sticky-nav li { width: 100%; }
+  .sticky-nav a {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    text-align: left;
+    color: #111;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 6px 18px rgba(12,18,30,0.04);
+    transition: background 180ms ease, transform 120ms ease;
+  }
+  /* Keep the brand visually inline with the nav bar on mobile (no boxed background)
+     Brand on non-landing pages may be an <a class="brand"> — override the boxed link styles */
+  .sticky-nav a.brand {
+    display: inline-flex;
+    width: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #FFD700; /* keep gold */
+    align-items: center;
+    margin-left: 6px;
+  }
+  .sticky-nav a:hover { background: #fff8e6; }
+
+  /* small divider between boxes when necessary */
+  .sticky-nav.open ul li + li a { margin-top: 6px; }
+
+  /* keep hero responsive */
+  .hero-text h1 { font-size: 2rem; }
+  .half-page-bg { flex-direction: column; align-items: center; text-align: center; height: auto; padding: 30px; }
+  .half-page-bg::before { width: 118%; height: 250px; position: relative; border-radius: 0; margin-top: 0px; }
+  .half-page-text { width: 90%; margin: 20px auto; }
+}
+
+/* Page-specific hero backgrounds (apply via body class) */
+.page-index .hero { background-image: url('images/ladyjustice_background3.jpg'); }
+.page-business .hero { background-image: url('images/guide-to-business.jpg'); }
+.page-lawlibrary .hero { background-image: url('images/Law-library_background.jpg'); }
+.page-qa .hero, .page-tandc .hero { background-image: url('images/q&a.jpg'); }
+
+/* Make the brand slightly larger on desktop screens only (keep mobile unchanged) */
+@media (min-width: 992px) {
+  .sticky-nav .brand { font-size: 1.5rem; }
+}
+
+/* Slight polish for link images */
+.britannica_logo { width:100px; height:60px; margin-top:5px; transition: transform .25s ease, box-shadow .25s ease; }
+.britannica_logo:hover { transform:scale(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.25); }
