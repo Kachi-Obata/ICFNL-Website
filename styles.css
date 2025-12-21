@@ -47,8 +47,8 @@ body.page-index {
   display: none; /* shown on mobile via media query */
 }
 
-/* Brand on the left (gold). Look for this selector to find the brand easily. */
-.sticky-nav .brand { font-weight:800; color: #FFD700; margin-left: 12px; font-size: 1.25rem; display: inline-block; transition: transform 120ms ease, box-shadow 180ms ease; }
+/* Brand on the left (white). Look for this selector to find the brand easily. */
+.sticky-nav .brand { font-weight:800; color: #fff; margin-left: 12px; font-size: 1.25rem; display: inline-block; transition: transform 120ms ease, box-shadow 180ms ease; cursor: pointer; }
 
 .nav-controls { display:flex; align-items:center; gap:12px; }
 
@@ -76,7 +76,7 @@ body.page-index {
 .sticky-nav a.brand:hover { background: transparent; color: inherit; text-decoration: none; }
 
 /* Keep the landing page nav transparent so hero shows through */
-.sticky-nav a:hover { background: #FFD700; color: #000; transform: translateY(-1px); }
+.sticky-nav a:hover { background: #fff; color: #000; transform: translateY(-1px); }
 
 /* Make navbar visible on non-landing pages immediately (so links don't blend into white backgrounds) */
 body:not(.page-index) .sticky-nav {
@@ -98,20 +98,21 @@ body.page-index .sticky-nav a { color: #fff; }
 
 /* When nav is on a light background (after scroll) make links dark and the toggle visible */
 .sticky-nav.scrolled a, body.scrolled .sticky-nav a { color: #111; background: rgba(0,0,0,0.03); }
-.sticky-nav.scrolled a:hover, body.scrolled .sticky-nav a:hover { background:#FFD700; color:#000; }
+.sticky-nav.scrolled a:hover, body.scrolled .sticky-nav a:hover { background:#fff; color:#000; }
 .sticky-nav.scrolled .nav-toggle, body.scrolled .nav-toggle { background: rgba(255,255,255,0.96); color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
 
-/* Keep the brand (ICFNL) visually consistent (gold) even when the nav goes into scrolled state */
+/* Keep the brand (ICFNL) visually consistent (white) even when the nav goes into scrolled state */
 .sticky-nav .brand,
 .sticky-nav a.brand,
 .sticky-nav.scrolled .brand,
 .sticky-nav.scrolled a.brand,
 body.scrolled .sticky-nav .brand,
 body.scrolled .sticky-nav a.brand {
-  color: #FFD700 !important;
+  color: #fff !important;
   background: transparent !important;
   box-shadow: none !important;
 }
+
 
 /* Desktop-specific: ensure nav links are visible immediately on non-home pages
    and give a subtle raised hover effect similar to the brand */
@@ -132,7 +133,7 @@ body.scrolled .sticky-nav a.brand {
   /* keep brand color intact (safety) */
   body:not(.page-index) .sticky-nav .brand,
   body:not(.page-index) .sticky-nav a.brand {
-    color: #FFD700 !important;
+    color: rgb(3, 157, 3) !important;
   }
 }
 
@@ -150,12 +151,12 @@ body.scrolled .sticky-nav a.brand {
 .hero::before { content: ""; position:absolute; inset:0; background:rgba(0,0,0,0.4); }
 .hero-text { position:relative; z-index:1; color:#fff; }
 .hero-text h1 { font-family: 'Calisto MT', serif; font-size:3rem; line-height:1.2; }
-.cta-button { background:#FFD700; color:#000; padding:12px 20px; font-weight:700; border-radius:6px; text-decoration:none; display:inline-block; }
-.cta-button:hover { background:#d4af37; }
+.cta-button { background:#fff; color:#000; padding:12px 20px; font-weight:700; border-radius:6px; text-decoration:none; display:inline-block; }
+.cta-button:hover { background:#f0f0f0; }
 
 /* Holiday message style (small, non-intrusive) */
 .holiday-message {
-  color: #FFD700; /* gold */
+  color: #fff; /* white */
   background: rgba(0,0,0,0.08);
   display: inline-block;
   padding: 8px 14px; /* a bit more padding for emphasis */
