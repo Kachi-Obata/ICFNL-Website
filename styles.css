@@ -10,9 +10,45 @@ body {
   overflow-x: hidden;
 }
 
+/* -----------------------------
+   Site variables (tweak here)
+   - Change these values to adjust layout/colors across the whole site.
+   - You can override any of these per-page by setting the same variable on the page body,
+     for example: body.page-lawfirm { --mobile-first-gap: 20px; }
+------------------------------ */
 :root{
+  /* Height of the fixed top navigation. Used to offset content on non-landing pages. */
   --nav-height: 64px;
+
+  /* Gap between the fixed nav and the first content card on mobile. Tweak this value. */
+  --mobile-first-gap: 35px;
+
+  /* Default brand color used on non-home pages. Home page keeps the brand white. */
+  --brand-color: rgb(3,157,3);
+
+  /* Other globals you may want to tweak */
+  --container-max-width: 1200px;
+  /* Card sizing - tweak these to control how wide the white card appears on desktop */
+  /* Make the default card noticeably wider on desktop. Increase these if you
+    want the white card to span more of the page on large viewports. */
+  --card-width-desktop: 75%; /* percentage of the container the card will take on wide screens */
+  --card-max-width: 1200px;   /* upper bound for very wide screens */
+  /* Mobile card width (used inside the mobile media query).
+     Use calc so the card fills the viewport while keeping consistent gutters. */
+  --card-width-mobile: 100%; /* edge-to-edge on mobile */
 }
+
+/* Accessibility helpers
+   - Focus styles below improve keyboard visibility for links and controls.
+   - For maximum compatibility we avoid non-standard vendor-only properties.
+*/
+
+/* Examples / quick overrides:
+   - Make home brand white (already applied in CSS for .page-index):
+       body.page-index { --brand-color: #fff; }
+   - Change mobile gap for a single page:
+       body.page-lawfirm { --mobile-first-gap: 24px; }
+*/
 
 /* Ensure content isn't hidden under fixed nav */
 body { padding-top: var(--nav-height); }
@@ -93,6 +129,14 @@ body.page-index .sticky-nav { background: transparent; color: #fff; }
 body.page-index .sticky-nav a { color: #fff; }
 .sticky-nav a:hover { background: #FFD700; color: #000; transform: translateY(-1px); }
 
+/* On the home page we want the nav links to lift but NOT show the yellow background.
+   Keep the translateY lift animation but make the hover background and shadow transparent. */
+body.page-index .sticky-nav a:hover {
+  background: transparent;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
 /* NAV SCROLLED STATE */
 .sticky-nav.scrolled, body.scrolled .sticky-nav { background: rgba(255,255,255,0.95); box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
 
@@ -101,16 +145,17 @@ body.page-index .sticky-nav a { color: #fff; }
 .sticky-nav.scrolled a:hover, body.scrolled .sticky-nav a:hover { background:#fff; color:#000; }
 .sticky-nav.scrolled .nav-toggle, body.scrolled .nav-toggle { background: rgba(255,255,255,0.96); color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
 
-/* Keep the brand (ICFNL) visually consistent (white) even when the nav goes into scrolled state */
+/* Keep the brand (ICFNL) visually consistent (white) even when the nav goes into scrolled state
+   NOTE: removed !important so per-page/mobile rules can override as needed. */
 .sticky-nav .brand,
 .sticky-nav a.brand,
 .sticky-nav.scrolled .brand,
 .sticky-nav.scrolled a.brand,
 body.scrolled .sticky-nav .brand,
 body.scrolled .sticky-nav a.brand {
-  color: #fff !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  color: #fff;
+  background: transparent;
+  box-shadow: none;
 }
 
 
@@ -118,8 +163,8 @@ body.scrolled .sticky-nav a.brand {
    and give a subtle raised hover effect similar to the brand */
 @media (min-width: 769px) {
   body:not(.page-index) .sticky-nav a {
-    color: #111 !important; /* ensure dark links on white backgrounds */
-    background: transparent !important;
+    color: #111; /* ensure dark links on white backgrounds */
+    background: transparent;
   }
 
   body:not(.page-index) .sticky-nav a:hover,
@@ -133,7 +178,7 @@ body.scrolled .sticky-nav a.brand {
   /* keep brand color intact (safety) */
   body:not(.page-index) .sticky-nav .brand,
   body:not(.page-index) .sticky-nav a.brand {
-    color: rgb(3, 157, 3) !important;
+    color: var(--brand-color);
   }
 }
 
@@ -174,11 +219,71 @@ body.scrolled .sticky-nav a.brand {
 .holiday-message.visible { opacity: 1; transform: translateY(0); }
 
 /* HALF PAGE (shared) */
-.half-page-bg { display:flex; align-items:center; justify-content:space-between; height:100vh; padding:60px; background-color:#f4f4f4; opacity:0; transform:translateY(20px); transition:opacity 1s ease-in-out, transform 1s ease-in-out; position:relative; }
-.half-page-bg::before { content:""; position:absolute; top:0; right:0; width:50%; height:100%; background-position:center; background-size:cover; background-repeat:no-repeat; z-index:-1; border-top-right-radius:50px; border-bottom-right-radius:50px; }
-.half-page-text { width:45%; text-align:left; padding:40px; background:white; box-shadow:0 10px 30px rgba(0,0,0,0.08); border-radius:10px; }
+.half-page-bg {
+  display: flex;
+  align-items: flex-start; /* align card to the top of the container */
+  justify-content: space-between;
+  min-height: 60vh; /* slightly smaller default to avoid huge gaps */
+  padding: 36px; /* reduce default padding so cards sit higher */
+  background-color: #f4f4f4;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+  position: relative;
+}
+.half-page-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+.half-page-text {
+  /* Use variables for card sizing so this is easy to tweak in one place */
+  width: var(--card-width-desktop, 60%);
+  max-width: var(--card-max-width, 920px); /* keep line length readable */
+  text-align: left;
+  padding: 40px;
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  color: #111; /* ensure good contrast */
+  line-height: 1.6;
+}
 
-.icfnl_green{ color:#4CAF50; }
+/* When the card is the first content block on the page (no hero above), reduce the top spacing */
+main > .half-page-bg:first-child,
+body.page-lawfirm .half-page-bg {
+  padding-top: 18px;
+}
+
+/* When the card follows a hero, pull it up slightly so it sits closer to the image */
+.hero + .half-page-bg {
+  margin-top: -48px;
+  padding-top: 48px; /* keep internal spacing consistent after the pull-up */
+}
+
+/* Reduce the pull-up on small screens to avoid overlap with nav */
+@media (max-width: 768px) {
+  .hero + .half-page-bg { margin-top: -24px; padding-top: 32px; }
+}
+
+/* Utility card class for other content regions */
+.card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+}
+
+.icfnl_green{ color:#43a747; }
 a { color:#4CAF50; }
 a:hover { color:darkgreen; }
 
@@ -241,18 +346,17 @@ a:hover { color:darkgreen; }
     opacity: 1;
     transform: translateY(0);
     overflow-y: auto; /* allow panel internal scroll when content is tall */
-    -webkit-overflow-scrolling: touch;
   }
 
   /* Ensure links are visible immediately when the panel is open (even before any scroll event) */
   .sticky-nav.open ul a,
   .sticky-nav.open ul a:link,
   .sticky-nav.open ul a:visited {
-    color: #111 !important;
+    color: #111;
   }
 
   /* Ensure the hamburger bars are dark when the menu is open */
-  .sticky-nav.open .nav-toggle .bar { background: #111 !important; }
+  .sticky-nav.open .nav-toggle .bar { background: #111; }
 
   /* boxed nav items */
   .sticky-nav li { width: 100%; }
@@ -288,10 +392,37 @@ a:hover { color:darkgreen; }
 
   /* keep hero responsive */
   .hero-text h1 { font-size: 2rem; }
-  .half-page-bg { flex-direction: column; align-items: center; text-align: center; height: auto; padding: 30px; }
-  .half-page-bg::before { width: 118%; height: 250px; position: relative; border-radius: 0; margin-top: 0px; }
-  .half-page-text { width: 90%; margin: 20px auto; }
+  /* Make the layout full-bleed on mobile: remove container padding so cards can be edge-to-edge */
+  .half-page-bg { flex-direction: column; align-items: center; text-align: center; height: auto; padding: 0; }
+  /* Keep the background pseudo-element absolutely positioned on mobile so it doesn't
+    occupy vertical layout space and push the card down. Center it horizontally. */
+  .half-page-bg::before { width: 118%; height: 250px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-radius: 0; margin-top: 0; }
+  /* Mobile: make the card truly edge-to-edge. Reduce inner padding for mobile so
+     content doesn't feel cramped while the card spans the full viewport. */
+  .half-page-text { width: var(--card-width-mobile, 100%); margin: 0; border-radius: 0; box-shadow: none; padding: 20px; }
+
+  /* Removed debug outlines; add targeted mobile pull-up for first cards */
+
+  /* Force first content card to sit directly under the nav on mobile */
+  main > .half-page-bg:first-child,
+  body.page-lawfirm .half-page-bg {
+    /* Remove the extra top margin so the first section sits directly under the nav. */
+    /* give a small visual gap under the fixed nav so the card isn't flush against it */
+    margin-top: var(--mobile-first-gap, 16px);
+    padding-top: 8px;
+    /* reset min-height set on desktop cards so mobile content can flow naturally */
+    min-height: unset;
+  }
+
+  /* Ensure container itself doesn't add extra top gap on mobile for all pages */
+  .half-page-bg { padding-top: 8px; }
+
+  /* Cancel the global body padding on mobile so we control offsets per-section instead */
+  body { padding-top: 0; }
 }
+
+
+
 
 /* Page-specific hero backgrounds (apply via body class) */
 .page-index .hero { background-image: url('images/ladyjustice_background3.jpg'); }
@@ -307,3 +438,68 @@ a:hover { color:darkgreen; }
 /* Slight polish for link images */
 .britannica_logo { width:100px; height:60px; margin-top:5px; transition: transform .25s ease, box-shadow .25s ease; }
 .britannica_logo:hover { transform:scale(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.25); }
+
+/* Mobile tweak: remove nav shadow so cards appear directly under the nav */
+@media (max-width: 768px) {
+  .sticky-nav {
+    box-shadow: none;
+    background: #fff;
+    border-bottom: none;
+  }
+}
+
+/* Focus-visible styles for keyboard users (only visual for keyboard input) */
+:focus-visible {
+  outline: 3px solid rgba(3,157,3,0.95); /* brand green ring */
+  outline-offset: 2px;
+}
+
+/* Stronger focus for interactive nav elements when not using touch */
+:not(.using-touch) .sticky-nav .nav-toggle:focus-visible,
+:not(.using-touch) .sticky-nav a:focus-visible,
+:not(.using-touch) .sticky-nav .nav-toggle:focus,
+:not(.using-touch) .sticky-nav a:focus {
+  box-shadow: 0 0 0 4px rgba(3,157,3,0.18);
+  border-radius: 8px;
+}
+
+/* If the device is touch-driven we suppress persistent focus outlines so
+   taps don't leave a visible border. The JS touch detector will add
+   `using-touch` to <body> on first touch. */
+.using-touch .sticky-nav a:focus,
+.using-touch .sticky-nav .nav-toggle:focus,
+.using-touch .sticky-nav a:focus-visible,
+.using-touch .sticky-nav .nav-toggle:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove platform tap highlight (Android/iOS) globally to avoid yellow traces */
+a, button { -webkit-tap-highlight-color: transparent; }
+
+/* Ensure the edge-to-edge card respects safe areas on devices with notches */
+.half-page-text { padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+
+/* Mobile-only: per-page brand color rules
+   Keep home (`page-index`) white; all other pages get green on mobile.
+   Placed at end so cascade and specificity reliably apply on mobile screens. */
+@media (max-width: 768px) {
+  /* Home remains white */
+  body.page-index .sticky-nav .brand,
+  body.page-index .sticky-nav a.brand {
+    color: #fff;
+  }
+
+  /* All non-home pages use site green for brand on mobile */
+  body:not(.page-index) .sticky-nav .brand,
+  body:not(.page-index) .sticky-nav a.brand {
+    color: rgb(3,157,3);
+  }
+}
+
+.britannica_logo {
+    width: 100px;
+    height: 70px;
+    margin-top: 5px;
+    margin-left: 25px;
+}
