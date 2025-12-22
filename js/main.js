@@ -140,4 +140,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (holiday) {
         setTimeout(() => holiday.classList.add('visible'), 200);
     }
+
+    // Update footer year dynamically so the site doesn't need manual updates each year
+    try {
+        const year = new Date().getFullYear();
+        document.querySelectorAll('.site-footer .site-footer-inner p:first-child').forEach(p => {
+            p.textContent = `© ${year} International Center for Nigerian Law. All rights reserved.`;
+        });
+    } catch (e) { /* noop if footer not present or DOM mutation prevented */ }
 });
