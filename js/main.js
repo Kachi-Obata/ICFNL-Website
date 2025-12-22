@@ -4,6 +4,14 @@
 // - fade-in on scroll
 // - navbar background / link color changes on scroll
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect first touch to suppress persistent focus outlines on touch devices.
+    // Adds `using-touch` to <body> so CSS can hide focus rings on touch input.
+    function onFirstTouch() {
+        try { document.body.classList.add('using-touch'); } catch (e) {}
+        window.removeEventListener('touchstart', onFirstTouch, { passive: true });
+    }
+    window.addEventListener('touchstart', onFirstTouch, { passive: true });
+
     // NAV TOGGLE
     const navToggle = document.querySelector('.nav-toggle');
     const stickyNav = document.querySelector('.sticky-nav');
@@ -18,7 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
             navToggle && navToggle.setAttribute('aria-expanded', 'true');
         }
         // move focus to first nav link
-        if (navLinks.length) navLinks[0].focus();
+        if (navLinks.length) {
+            // focus first link for keyboard users
+            navLinks[0].focus();
+            // also remove any residual :focus outline shortly after to avoid
+            // leaving a persistent border on touch devices when they reopen the nav
+            setTimeout(() => { try { navLinks[0].blur(); } catch(e){} }, 300);
+        }
     }
     function closeNav() {
         if (stickyNav.classList.contains('open')) {
@@ -26,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
             navToggle && navToggle.setAttribute('aria-expanded', 'false');
             // return focus to toggle
             navToggle && navToggle.focus();
+            // ensure no nav-link retains focus when nav is closed
+            navLinks.forEach(l => { try { l.blur(); } catch(e){} });
         }
     }
 
@@ -34,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         navToggle.addEventListener('click', function() {
             if (stickyNav.classList.contains('open')) closeNav(); else openNav();
         });
+        // ensure toggle doesn't retain focus on touch after tapping
+        navToggle.addEventListener('pointerdown', () => { try { navToggle.blur(); } catch(e){} });
     }
 
     // Close on Escape and handle focus trapping for mobile nav
@@ -75,6 +93,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Ensure nav links do not keep focus after tapping/clicking (prevents a lingering border)
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // blur after a short delay so platform tap highlight still shows briefly
+            setTimeout(() => { try { link.blur(); } catch(e){} }, 100);
+        });
+        // also clear focus on pointerdown to avoid persistent focus rings on some devices
+        link.addEventListener('pointerdown', () => { try { link.blur(); } catch(e){} });
+    });
+
     // FADE-IN ON SCROLL and NAV COLOR
     function onScroll() {
         document.querySelectorAll('.fade-in').forEach(function(element) {
@@ -87,21 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const navLinks = document.querySelectorAll('.nav-link');
         const lawFirmSection = document.querySelector('#law-firm');
 
-        if (window.scrollY > 100) {
-            nav && nav.classList.add('scrolled');
-            document.body.classList.add('scrolled');
-        } else {
-            nav && nav.classList.remove('scrolled');
-            document.body.classList.remove('scrolled');
-        }
+        // Do not toggle 'scrolled' classes on scroll. Keep nav link colors and
+        // background controlled entirely by CSS and the page's body class.
 
-        if (lawFirmSection) {
-            if (lawFirmSection.getBoundingClientRect().top <= 50) {
-                navLinks.forEach(link => link.style.color = 'black');
-            } else {
-                navLinks.forEach(link => link.style.color = 'white');
-            }
-        }
+        // Remove inline color toggles — let CSS handle link colors so they remain
+        // consistently black on non-home pages regardless of scroll position.
     }
 
     document.addEventListener('scroll', onScroll);
