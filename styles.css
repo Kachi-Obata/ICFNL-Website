@@ -507,16 +507,39 @@ a, button { -webkit-tap-highlight-color: transparent; }
 
 /* SITE FOOTER */
 .site-footer {
-  background: #f4f5f7; /* subtle grey */
-  color: #222;
-  padding: 24px 16px;
+  background: #292929; /* subtle grey */
+  color: #fff;
+    padding: 10px 16px; /* slightly reduced padding on desktop to lower footer height */
   text-align: center;
-  font-size: 0.95rem;
-  border-top: 1px solid #e6e7e9;
+    font-size: 0.92rem;
+  border-top: 1px solid #292929;
 }
-.site-footer a { color: var(--brand-color); text-decoration: none; font-weight: 600; }
+
+.site-footer a { color: #fff; text-decoration: none; font-weight: 600; }
 .site-footer a:hover { text-decoration: underline; }
 .site-footer .site-footer-inner { max-width: var(--container-max-width); margin: 0 auto; }
+
+/* Remove subtle borders/box-shadows on the home page so elements look flush.
+   Keep the footer intact (it should still show its styling). We use a
+   specific rule scoped to `body.page-index` and exclude the footer and its children.
+*/
+body.page-index :not(.site-footer):not(.site-footer *) {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Specifically ensure the holiday message has no visible boxes/outline */
+.holiday-message,
+.holiday-message * {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
 /* Compact footer for small screens to reduce vertical height */
 @media (max-width: 640px) {
