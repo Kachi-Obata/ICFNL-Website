@@ -135,10 +135,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 2500);
 
-    // Reveal holiday message (if present) with a small delay so it fades in
+    // Holiday message logic: only show on specific holidays and update the message text
     const holiday = document.querySelector('.holiday-message');
+    function formatMMDD(d) {
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${mm}-${dd}`;
+    }
+    // Compute Easter Sunday for a given year (Anonymous Gregorian algorithm)
+    function getEasterDate(year) {
+        const a = year % 19;
+        const b = Math.floor(year / 100);
+        const c = year % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const l = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * l) / 451);
+        const month = Math.floor((h + l - 7 * m + 114) / 31); // 3=March, 4=April
+        const day = ((h + l - 7 * m + 114) % 31) + 1;
+        return new Date(year, month - 1, day);
+    }
+
     if (holiday) {
-        setTimeout(() => holiday.classList.add('visible'), 200);
+        try {
+            const today = new Date();
+            const todayKey = formatMMDD(today);
+            const year = today.getFullYear();
+
+            const fixed = {
+                '01-01': `Happy New Year — From everyone at ICFNL`,
+                '12-25': `Merry Christmas — From everyone at ICFNL`,
+                '12-26': `Happy Boxing Day — From everyone at ICFNL`
+            };
+
+            // compute Easter for this year and possibly for adjacent years if needed
+            const easter = getEasterDate(year);
+            const easterKey = formatMMDD(easter);
+
+            let message = fixed[todayKey] || (todayKey === easterKey ? `Happy Easter — From everyone at ICFNL` : null);
+
+            if (message) {
+                // Put message inside an H1 to match markup and animate in
+                holiday.innerHTML = `<h1>${message}</h1>`;
+                // small reveal delay to keep existing animation behavior
+                setTimeout(() => holiday.classList.add('visible'), 200);
+            } else {
+                // hide entirely on non-holiday dates
+                holiday.style.display = 'none';
+            }
+        } catch (e) {
+            // if anything fails, hide the holiday element to avoid showing placeholder
+            try { holiday.style.display = 'none'; } catch (err) {}
+        }
     }
 
     // Update footer year dynamically so the site doesn't need manual updates each year
