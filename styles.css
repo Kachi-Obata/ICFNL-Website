@@ -226,7 +226,7 @@ body.scrolled .sticky-nav a.brand {
   justify-content: space-between;
   min-height: 60vh; /* slightly smaller default to avoid huge gaps */
   padding: 36px; /* reduce default padding so cards sit higher */
-  background-color: #f4f4f4;
+  background-color: #333232;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 1s ease-in-out, transform 1s ease-in-out;
