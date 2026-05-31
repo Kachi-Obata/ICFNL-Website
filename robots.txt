@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /TandC.html
+
+Sitemap: https://www.nigeria-law.org/sitemap.xml

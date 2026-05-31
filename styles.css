@@ -53,6 +53,41 @@ body {
 /* Ensure content isn't hidden under fixed nav */
 body { padding-top: var(--nav-height); }
 
+/* Skip-to-content link — keyboard accessibility */
+.skip-to-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  text-decoration: none;
+}
+.skip-to-content:focus {
+  position: fixed;
+  width: auto;
+  height: auto;
+  padding: 10px 20px;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(3,157,3);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 0 0 8px 8px;
+  z-index: 9999;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 /* Home page: keep as a pure landing (no vertical scroll), nav overlays hero */
 body.page-index {
   padding-top: 0; /* let nav overlay the hero */
@@ -285,6 +320,7 @@ body.page-lawfirm .half-page-bg {
 }
 
 .icfnl_green{ color:#43a747; }
+.green-NILR { color: #43a747; }
 a { color:#4CAF50; }
 a:hover { color:darkgreen; }
 
