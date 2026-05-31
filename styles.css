@@ -486,7 +486,7 @@ a:hover { color:darkgreen; }
 }
 .page-business .hero { background-image: url('images/guide-to-business.jpg'); }
 .page-lawlibrary .hero { background-image: url('images/Law-library_background.jpg'); }
-.page-qa .hero, .page-tandc .hero { background-image: url('images/q&a.jpg'); }
+.page-qa .hero, .page-tandc .hero { background-image: url('images/faq.jpg'); }
 
 /* Make the brand slightly larger on desktop screens only (keep mobile unchanged) */
 @media (min-width: 992px) {
@@ -574,7 +574,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
   max-width: var(--container-max-width);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1.5fr;
   gap: 48px;
   padding: 48px 24px 40px;
 }
@@ -601,8 +601,6 @@ a, button { -webkit-tap-highlight-color: transparent; }
   border-bottom: 1px solid #2e2e2e;
 }
 
-.footer-links ul { list-style: none; margin: 0; padding: 0; }
-.footer-links li { margin-bottom: 9px; }
 
 .site-footer a { color: #aaa; text-decoration: none; transition: color 0.2s ease; }
 .site-footer a:hover { color: #43a747; }
