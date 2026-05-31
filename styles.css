@@ -194,6 +194,12 @@ body.scrolled .sticky-nav a.brand {
   box-shadow: none;
 }
 
+/* Home page: brand in signature green */
+body.page-index .sticky-nav .brand,
+body.page-index .sticky-nav a.brand {
+  color: #43a747;
+}
+
 
 /* Desktop-specific: ensure nav links are visible immediately on non-home pages
    and give a subtle raised hover effect similar to the brand */
@@ -521,10 +527,10 @@ a, button { -webkit-tap-highlight-color: transparent; }
    Keep home (`page-index`) white; all other pages get green on mobile.
    Placed at end so cascade and specificity reliably apply on mobile screens. */
 @media (max-width: 768px) {
-  /* Home remains white */
+  /* Home brand: signature green */
   body.page-index .sticky-nav .brand,
   body.page-index .sticky-nav a.brand {
-    color: #fff;
+    color: #43a747;
   }
 
   /* All non-home pages use site green for brand on mobile */
@@ -543,17 +549,25 @@ a, button { -webkit-tap-highlight-color: transparent; }
 
 /* SITE FOOTER */
 .site-footer {
-  background: #292929; /* subtle grey */
+  background: #292929;
   color: #fff;
-    padding: 10px 16px; /* slightly reduced padding on desktop to lower footer height */
-  text-align: center;
-    font-size: 0.92rem;
-  border-top: 1px solid #292929;
+  padding: 6px 20px;
+  font-size: 0.82rem;
+  border-top: 1px solid #1e1e1e;
 }
 
+.site-footer p { margin: 0; }
 .site-footer a { color: #fff; text-decoration: none; font-weight: 600; }
 .site-footer a:hover { text-decoration: underline; }
-.site-footer .site-footer-inner { max-width: var(--container-max-width); margin: 0 auto; }
+.site-footer .site-footer-inner {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
 
 /* Remove subtle borders/box-shadows on the home page so elements look flush.
    Keep the footer intact (it should still show its styling). We use a
@@ -577,28 +591,16 @@ body.page-index :not(.site-footer):not(.site-footer *) {
   margin: 0 !important;
 }
 
-/* Compact footer for small screens to reduce vertical height */
+/* Compact footer for small screens */
 @media (max-width: 640px) {
   .site-footer {
-    padding: 12px 10px;
-    font-size: 0.88rem;
-    line-height: 1.25;
+    padding: 8px 12px;
+    font-size: 0.8rem;
   }
   .site-footer .site-footer-inner {
-    max-width: 100%;
-    display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 3px;
     align-items: center;
-  }
-  .site-footer .site-footer-inner p { margin: 0; }
-  /* Make the links wrap and sit on a single compact line when possible */
-  .site-footer .site-footer-inner p:last-child {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-size: 0.9rem;
-    margin-top: 4px;
+    text-align: center;
   }
 }
