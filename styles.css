@@ -209,7 +209,7 @@ body.page-index .sticky-nav a.brand {
 
 /* Desktop-specific: ensure nav links are visible immediately on non-home pages
    and give a subtle raised hover effect similar to the brand */
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
   body:not(.page-index) .sticky-nav a {
     color: #111; /* ensure dark links on white backgrounds */
     background: transparent;
@@ -316,7 +316,7 @@ body.page-lawfirm .half-page-bg {
 /* When the card follows a hero (now wrapped in <main>), pull it up slightly on desktop
    so it overlaps the hero bottom edge and feels connected rather than floating below it.
    Scoped to min-width so it doesn't interfere with the mobile nav-gap rule. */
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
   .hero + main > .half-page-bg:first-child {
     margin-top: -48px;
     padding-top: 48px;
@@ -343,7 +343,7 @@ a:hover { color:darkgreen; }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 /* Mobile navigation - animated right-aligned white panel with boxed items */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   /* modern white toggle button */
   .sticky-nav .nav-toggle {
     display: flex;
@@ -498,7 +498,7 @@ a:hover { color:darkgreen; }
 .britannica_logo:hover { transform:scale(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.25); }
 
 /* Mobile tweak: remove nav shadow so cards appear directly under the nav */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sticky-nav {
     box-shadow: none;
     background: #fff;
@@ -541,7 +541,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
 /* Mobile-only: per-page brand color rules
    Keep home (`page-index`) white; all other pages get green on mobile.
    Placed at end so cascade and specificity reliably apply on mobile screens. */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   /* Home brand: signature green */
   body.page-index .sticky-nav .brand,
   body.page-index .sticky-nav a.brand {
@@ -642,11 +642,60 @@ body.page-index :not(.site-footer):not(.site-footer *) {
   margin: 0 !important;
 }
 
-/* Mobile footer — stack columns */
-@media (max-width: 768px) {
+/* Mobile/tablet footer — stack columns */
+@media (max-width: 1024px) {
   .site-footer-inner {
     grid-template-columns: 1fr;
     gap: 32px;
     padding: 36px 20px 28px;
   }
+}
+
+/* Desktop footer — compact single strip, no wasted horizontal space */
+@media (min-width: 1025px) {
+  .site-footer-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    gap: 32px;
+    grid-template-columns: unset;
+  }
+
+  /* Brand: logo + name inline, hide tagline */
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .footer-logo { font-size: 1.3rem; margin: 0; }
+  .footer-brand p:not(.footer-logo) { display: none; }
+
+  /* Contact: all items in one horizontal row */
+  .footer-col h3 { display: none; }
+  .footer-contact address {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    justify-content: flex-end;
+  }
+  .footer-contact address p {
+    margin: 0;
+    padding: 0 14px;
+    border-left: 1px solid #2e2e2e;
+    font-size: 0.82rem;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .footer-contact address p:first-child {
+    border-left: none;
+    padding-left: 0;
+  }
+  /* Collapse br tags so items stay on one line */
+  .footer-contact br { display: none; }
+  /* Hide the postal address on desktop — detailed address lives on the law firm page */
+  .footer-contact address p:first-child { display: none; }
 }
