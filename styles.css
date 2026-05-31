@@ -462,7 +462,7 @@ a:hover { color:darkgreen; }
 
 
 /* Page-specific hero backgrounds (apply via body class) */
-.page-index .hero { background-image: url('images/ladyjustice_background3.jpg'); }
+.page-index .hero { background-image: url('images/ICFNL-hero.png'); }
 .page-business .hero { background-image: url('images/guide-to-business.jpg'); }
 .page-lawlibrary .hero { background-image: url('images/Law-library_background.jpg'); }
 .page-qa .hero, .page-tandc .hero { background-image: url('images/q&a.jpg'); }
