@@ -20,8 +20,9 @@ body {
   /* Height of the fixed top navigation. Used to offset content on non-landing pages. */
   --nav-height: 64px;
 
-  /* Gap between the fixed nav and the first content card on mobile. Tweak this value. */
-  --mobile-first-gap: 35px;
+  /* Gap between the fixed nav and the first content card on mobile.
+     Must clear the nav height (--nav-height) plus a comfortable breathing room. */
+  --mobile-first-gap: calc(var(--nav-height) + 12px);
 
   /* Default brand color used on non-home pages. Home page keeps the brand white. */
   --brand-color: rgb(3,157,3);
@@ -52,6 +53,11 @@ body {
 
 /* Ensure content isn't hidden under fixed nav */
 body { padding-top: var(--nav-height); }
+
+/* Offset anchor scroll targets so fixed nav doesn't cover them */
+[id] {
+  scroll-margin-top: calc(var(--nav-height) + 12px);
+}
 
 /* Skip-to-content link — keyboard accessibility */
 .skip-to-content {
@@ -298,6 +304,7 @@ body.page-index .sticky-nav a.brand {
   border-radius: 12px;
   color: #111; /* ensure good contrast */
   line-height: 1.6;
+  overflow-wrap: break-word; /* prevent long emails/URLs from overflowing on narrow screens */
 }
 
 /* When the card is the first content block on the page (no hero above), reduce the top spacing */
@@ -306,15 +313,14 @@ body.page-lawfirm .half-page-bg {
   padding-top: 18px;
 }
 
-/* When the card follows a hero, pull it up slightly so it sits closer to the image */
-.hero + .half-page-bg {
-  margin-top: -48px;
-  padding-top: 48px; /* keep internal spacing consistent after the pull-up */
-}
-
-/* Reduce the pull-up on small screens to avoid overlap with nav */
-@media (max-width: 768px) {
-  .hero + .half-page-bg { margin-top: -24px; padding-top: 32px; }
+/* When the card follows a hero (now wrapped in <main>), pull it up slightly on desktop
+   so it overlaps the hero bottom edge and feels connected rather than floating below it.
+   Scoped to min-width so it doesn't interfere with the mobile nav-gap rule. */
+@media (min-width: 769px) {
+  .hero + main > .half-page-bg:first-child {
+    margin-top: -48px;
+    padding-top: 48px;
+  }
 }
 
 /* Utility card class for other content regions */
@@ -468,7 +474,16 @@ a:hover { color:darkgreen; }
 
 
 /* Page-specific hero backgrounds (apply via body class) */
-.page-index .hero { background-image: url('images/ICFNL-hero.png'); }
+/* WebP served to modern browsers, JPEG as fallback */
+.page-index .hero { background-image: url('images/ICFNL-hero.jpg'); }
+@supports (background-image: image-set(url('') type('image/webp'))) {
+  .page-index .hero {
+    background-image: image-set(
+      url('images/ICFNL-hero.webp') type('image/webp'),
+      url('images/ICFNL-hero.jpg')  type('image/jpeg')
+    );
+  }
+}
 .page-business .hero { background-image: url('images/guide-to-business.jpg'); }
 .page-lawlibrary .hero { background-image: url('images/Law-library_background.jpg'); }
 .page-qa .hero, .page-tandc .hero { background-image: url('images/q&a.jpg'); }
@@ -549,25 +564,63 @@ a, button { -webkit-tap-highlight-color: transparent; }
 
 /* SITE FOOTER */
 .site-footer {
-  background: #292929;
-  color: #fff;
-  padding: 6px 20px;
-  font-size: 0.82rem;
-  border-top: 1px solid #1e1e1e;
+  background: #1a1a1a;
+  color: #aaa;
+  font-size: 0.88rem;
+  border-top: 3px solid #43a747;
 }
 
-.site-footer p { margin: 0; }
-.site-footer a { color: #fff; text-decoration: none; font-weight: 600; }
-.site-footer a:hover { text-decoration: underline; }
-.site-footer .site-footer-inner {
+.site-footer-inner {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1.5fr;
+  gap: 48px;
+  padding: 48px 24px 40px;
 }
+
+.footer-logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #43a747;
+  margin: 0 0 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer-brand p { margin: 0 0 6px; color: #ccc; font-size: 0.85rem; }
+.footer-tagline { color: #666 !important; font-style: italic; font-size: 0.8rem !important; line-height: 1.7; margin-top: 10px !important; }
+
+.footer-col h3 {
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+.footer-links ul { list-style: none; margin: 0; padding: 0; }
+.footer-links li { margin-bottom: 9px; }
+
+.site-footer a { color: #aaa; text-decoration: none; transition: color 0.2s ease; }
+.site-footer a:hover { color: #43a747; }
+
+.footer-contact address { font-style: normal; }
+.footer-contact p { margin: 0 0 10px; }
+.footer-contact p:last-child { margin-bottom: 0; }
+
+.footer-bottom { border-top: 1px solid #2a2a2a; }
+.footer-bottom-inner {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 14px 24px;
+  text-align: center;
+  color: #555;
+  font-size: 0.78rem;
+}
+.footer-bottom-inner p { margin: 0; }
 
 /* Remove subtle borders/box-shadows on the home page so elements look flush.
    Keep the footer intact (it should still show its styling). We use a
@@ -591,16 +644,11 @@ body.page-index :not(.site-footer):not(.site-footer *) {
   margin: 0 !important;
 }
 
-/* Compact footer for small screens */
-@media (max-width: 640px) {
-  .site-footer {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-  }
-  .site-footer .site-footer-inner {
-    flex-direction: column;
-    gap: 3px;
-    align-items: center;
-    text-align: center;
+/* Mobile footer — stack columns */
+@media (max-width: 768px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 36px 20px 28px;
   }
 }

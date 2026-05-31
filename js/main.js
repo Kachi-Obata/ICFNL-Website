@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
-                window.scrollTo({ top: target.offsetTop - 50, behavior: 'smooth' });
+                const navHeight = document.querySelector('.sticky-nav')?.offsetHeight || 64;
+                window.scrollTo({ top: target.offsetTop - navHeight - 12, behavior: 'smooth' });
                 // collapse nav on mobile after click
                 if (stickyNav && stickyNav.classList.contains('open')) {
                     stickyNav.classList.remove('open');
@@ -197,8 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update footer year dynamically so the site doesn't need manual updates each year
     try {
         const year = new Date().getFullYear();
-        document.querySelectorAll('.site-footer .site-footer-inner p:first-child').forEach(p => {
-            p.textContent = `© ${year} International Center for Nigerian Law. All rights reserved.`;
+        document.querySelectorAll('.footer-year').forEach(el => {
+            el.textContent = year;
         });
     } catch (e) { /* noop if footer not present or DOM mutation prevented */ }
 });
